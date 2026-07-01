@@ -150,6 +150,25 @@ private enum PreviewTab: Hashable { case home, search, reels, profile }
         var body: some View {
             ZStack(alignment: .bottom) {
                 Color.black.ignoresSafeArea()
+
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        ForEach(0..<40, id: \.self) { index in
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.white.opacity(0.08))
+                                .frame(height: 120)
+                                .overlay(
+                                    Text("Row \(index)")
+                                        .foregroundStyle(.white.opacity(0.6))
+                                )
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 120)
+                }
+                .minimizesTabBar(scrollState)
+
                 FloatingTabBar(selection: $selection, tabs: tabs, scrollState: scrollState)
             }
             .preferredColorScheme(.dark)
