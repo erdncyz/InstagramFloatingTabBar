@@ -64,15 +64,22 @@ public struct FloatingTabBar<ID: Hashable>: View {
 
     private var isCompact: Bool { scrollState.isCompact }
 
+    private var isPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
+
+    private var iconSize: CGFloat { isPad ? style.iconSize + 4 : style.iconSize }
+
+    private var expandedMaxWidth: CGFloat? { isPad ? 440 : nil }
+
     public var body: some View {
-        HStack(spacing: isCompact ? 10 : 0) {
+        HStack(spacing: isCompact ? (isPad ? 18 : 10) : 0) {
             ForEach(tabs) { tab in
                 tabButton(tab)
             }
         }
-        .padding(.horizontal, isCompact ? 10 : 6)
-        .padding(.vertical, isCompact ? 6 : 8)
+        .padding(.horizontal, isCompact ? (isPad ? 14 : 10) : 6)
+        .padding(.vertical, isCompact ? (isPad ? 8 : 6) : 8)
         .background(barBackground)
+        .frame(maxWidth: expandedMaxWidth)
         .padding(.horizontal, 16)
         .animation(.spring(response: 0.32, dampingFraction: 0.9), value: isCompact)
         .animation(.easeInOut(duration: 0.25), value: tabs.count)
@@ -92,7 +99,7 @@ public struct FloatingTabBar<ID: Hashable>: View {
                     .renderingMode(.template)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: style.iconSize, height: style.iconSize)
+                    .frame(width: iconSize, height: iconSize)
                     .foregroundStyle(isSelected ? style.selectedColor : style.unselectedColor)
 
                 if !isCompact {
@@ -107,8 +114,8 @@ public struct FloatingTabBar<ID: Hashable>: View {
                 }
             }
             .frame(maxWidth: isCompact ? nil : .infinity)
-            .padding(.vertical, isCompact ? 8 : 6)
-            .padding(.horizontal, isCompact ? 8 : 4)
+            .padding(.vertical, isCompact ? (isPad ? 10 : 8) : 6)
+            .padding(.horizontal, isCompact ? (isPad ? 10 : 8) : 4)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
